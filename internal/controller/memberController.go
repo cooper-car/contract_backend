@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"contract/internal/data/dto"
 	"contract/internal/service/memberService"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -23,5 +24,25 @@ func (m MemberController) CreateMockDataForMembers(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "create success",
+	})
+}
+
+func (m MemberController) UpdateMember(ctx *gin.Context) {
+
+	var memberID = ctx.Param("id")
+	var requestDTO dto.UpdateMemberRequestDTO
+
+	err := ctx.BindJSON(&requestDTO)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "request body error",
+		})
+	}
+
+	// 更新 member 資料
+	m.memberServ.UpdateMember(memberID, requestDTO)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "update success",
 	})
 }

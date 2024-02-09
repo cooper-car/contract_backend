@@ -24,3 +24,11 @@ func (m MemberRepository) GetAllPk() []int {
 
 	return pks
 }
+
+func (m MemberRepository) UpdateMember(id string, memberPO po.MemberPO) {
+	sql := `UPDATE member SET username = ? WHERE pk = ?`
+	result := m.db.Exec(sql, memberPO.Username, id)
+	if result.Error != nil {
+		fmt.Println(result.Error.Error())
+	}
+}
