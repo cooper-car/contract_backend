@@ -65,3 +65,13 @@ func (m MemberController) CreateMember(ctx *gin.Context) {
 		"message": "create success",
 	})
 }
+
+func (m MemberController) GetMembersTransactionsYearly(ctx *gin.Context) {
+
+	// 取得所有 member 的年度交易資料
+	result := m.memberServ.GetMembersTransactionsYearly()
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": result,
+	})
+}

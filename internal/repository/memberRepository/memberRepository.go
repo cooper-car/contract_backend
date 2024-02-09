@@ -1,8 +1,11 @@
 package memberRepository
 
 import (
+	"contract/internal/data/dto"
 	"contract/internal/data/po"
 	"fmt"
+	"github.com/shopspring/decimal"
+	"time"
 )
 
 func (m MemberRepository) CreateByBath(data []po.MemberPO) {
@@ -39,4 +42,53 @@ func (m MemberRepository) CreateMember(memberPO po.MemberPO) {
 	if result.Error != nil {
 		fmt.Println(result.Error.Error())
 	}
+}
+
+func (m MemberRepository) GetMembersTransactionsYearly() []dto.GetMembersTransactionsYearlyResponseDTO {
+	sql := `
+		SELECT m.username, b.type, b.borrow_fee, b.create_time as borrow_fee_create_time, m.create_time as user_create_time 
+		FROM borrow_fee as b JOIN member as m ON b.member_fk = m.pk 
+		WHERE b.create_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
+		ORDER BY b.create_time ASC
+`
+
+	var result []dto.GetMembersTransactionsYearlyResponseDTO
+
+	rows, err := m.db.Raw(sql).Rows()
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
+	for rows.Next() {
+		var username string
+		var types int
+		var borrowFee decimal.Decimal
+		var borrowFeeCreateTime string
+		var userCreateTime string
+
+		rows.Scan(
+			&username,
+			&types,
+			&borrowFee,
+			&borrowFeeCreateTime,
+			&userCreateTime,
+		)
+
+		borrowFeeTime, _ := time.Parse("2006-01-02T15:04:05-07:00", borrowFeeCreateTime)
+		borrowFeeDateTime := borrowFeeTime.Format("2006-01-02 15:04:05")
+
+		userTime, _ := time.Parse("2006-01-02T15:04:05-07:00", userCreateTime)
+		userDateTime := userTime.Format("2006-01-02 15:04:05")
+
+		result = append(result, dto.GetMembersTransactionsYearlyResponseDTO{
+			Username:            username,
+			Type:                types,
+			BorrowFee:           borrowFee,
+			BorrowFeeCreateTime: borrowFeeDateTime,
+			UserCreateTime:      userDateTime,
+		})
+	}
+
+	return result
 }
