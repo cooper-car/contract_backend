@@ -46,3 +46,22 @@ func (m MemberController) UpdateMember(ctx *gin.Context) {
 		"message": "update success",
 	})
 }
+
+func (m MemberController) CreateMember(ctx *gin.Context) {
+
+	var requestDTO dto.PostMemberRequestDTO
+
+	err := ctx.BindJSON(&requestDTO)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "request body error",
+		})
+	}
+
+	// 新增 member 資料
+	m.memberServ.CreateMember(requestDTO)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "create success",
+	})
+}

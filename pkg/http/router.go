@@ -20,6 +20,7 @@ func SetupRouter() *gin.Engine {
 
 	router.POST("/api/member/mock/data", memberController.CreateMockDataForMembers)
 	router.PATCH("/api/member/:id", memberController.UpdateMember)
+	router.POST("/api/member", memberController.CreateMember)
 
 	return router
 }

@@ -32,3 +32,11 @@ func (m MemberRepository) UpdateMember(id string, memberPO po.MemberPO) {
 		fmt.Println(result.Error.Error())
 	}
 }
+
+func (m MemberRepository) CreateMember(memberPO po.MemberPO) {
+	sql := `INSERT INTO member (username, create_time) VALUES (?, ?)`
+	result := m.db.Exec(sql, memberPO.Username, memberPO.CreateTime)
+	if result.Error != nil {
+		fmt.Println(result.Error.Error())
+	}
+}
