@@ -75,3 +75,14 @@ func (m MemberController) GetMembersTransactionsYearly(ctx *gin.Context) {
 		"data": result,
 	})
 }
+
+func (m MemberController) GetMembers(context *gin.Context) {
+
+	// 取得所有 member 資料
+	result := m.memberServ.GetMembers()
+
+	context.JSON(http.StatusOK, gin.H{
+		"data": result,
+	})
+
+}

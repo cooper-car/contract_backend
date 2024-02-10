@@ -19,3 +19,8 @@ type GetMembersTransactionsYearlyResponseDTO struct {
 	BorrowFeeCreateTime string          `json:"borrowFeeCreateTime"`
 	UserCreateTime      string          `json:"userCreateTime"`
 }
+
+type GetMembersResponseDTO struct {
+	Pk       int    `json:"pk"`
+	Username string `json:"username"`
+}

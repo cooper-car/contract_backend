@@ -92,3 +92,15 @@ func (m MemberRepository) GetMembersTransactionsYearly() []dto.GetMembersTransac
 
 	return result
 }
+
+func (m MemberRepository) GetMembers() []dto.GetMembersResponseDTO {
+	var members []dto.GetMembersResponseDTO
+	sql := `SELECT pk, username FROM member`
+	result := m.db.Raw(sql).Scan(&members)
+	if result.Error != nil {
+		fmt.Println(result.Error.Error())
+	}
+
+	return members
+
+}
