@@ -7,10 +7,13 @@ import (
 	"contract/internal/repository/memberRepository"
 	"contract/internal/service/memberService"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
+	router.Use(CORSMiddleware())
+
 	db := repository.GetDB()
 
 	memberRepo := memberRepository.NewMemberRepository(db)
@@ -24,4 +27,31 @@ func SetupRouter() *gin.Engine {
 	router.GET("/api/members/transactions/yearly", memberController.GetMembersTransactionsYearly)
 
 	return router
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		// 接收客戶端發送的origin
+		c.Header("Access-Control-Allow-Origin", "*")
+
+		// 允許客戶端傳遞校驗信息比如 cookie
+		c.Header("Access-Control-Allow-Credentials", "true")
+
+		// 允許跨域設置可以返回其他子段，可以自定義字段
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With, Account, URL")
+
+		// 服務器支持的所有跨域請求的方法
+		c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, PATCH, DELETE")
+
+		// 設置緩存時間
+		c.Header("Access-Control-Max-Age", "86400")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+
+		c.Next()
+	}
 }
