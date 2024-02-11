@@ -12,7 +12,7 @@ type PostMemberRequestDTO struct {
 	Username string `json:"username"`
 }
 
-type GetMembersTransactionsYearlyResponseDTO struct {
+type GetMembersTransactionsResponseDTO struct {
 	Username            string          `json:"username"`
 	Type                int             `json:"type"`
 	BorrowFee           decimal.Decimal `json:"borrowFee"`

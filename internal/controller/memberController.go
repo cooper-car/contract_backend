@@ -66,23 +66,26 @@ func (m MemberController) CreateMember(ctx *gin.Context) {
 	})
 }
 
-func (m MemberController) GetMembersTransactionsYearly(ctx *gin.Context) {
-
-	// 取得所有 member 的年度交易資料
-	result := m.memberServ.GetMembersTransactionsYearly()
-
-	ctx.JSON(http.StatusOK, gin.H{
-		"data": result,
-	})
-}
-
-func (m MemberController) GetMembers(context *gin.Context) {
+func (m MemberController) GetMembers(ctx *gin.Context) {
 
 	// 取得所有 member 資料
 	result := m.memberServ.GetMembers()
 
-	context.JSON(http.StatusOK, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"data": result,
 	})
 
+}
+
+func (m MemberController) GetMemberTransactions(ctx *gin.Context) {
+
+	id := ctx.Param("id")
+	startDateTime := ctx.Query("start_datetime")
+	endDateTime := ctx.Query("end_datetime")
+
+	result := m.memberServ.GetMembersTransactions(id, startDateTime, endDateTime)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": result,
+	})
 }

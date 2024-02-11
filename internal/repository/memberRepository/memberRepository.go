@@ -44,17 +44,28 @@ func (m MemberRepository) CreateMember(memberPO po.MemberPO) {
 	}
 }
 
-func (m MemberRepository) GetMembersTransactionsYearly() []dto.GetMembersTransactionsYearlyResponseDTO {
+func (m MemberRepository) GetMembers() []dto.GetMembersResponseDTO {
+	var members []dto.GetMembersResponseDTO
+	sql := `SELECT pk, username FROM member`
+	result := m.db.Raw(sql).Scan(&members)
+	if result.Error != nil {
+		fmt.Println(result.Error.Error())
+	}
+
+	return members
+}
+
+func (m MemberRepository) GetAllMembersTransactionsByDateRange(start string, end string) []dto.GetMembersTransactionsResponseDTO {
 	sql := `
 		SELECT m.username, b.type, b.borrow_fee, b.create_time as borrow_fee_create_time, m.create_time as user_create_time 
-		FROM borrow_fee as b JOIN member as m ON b.member_fk = m.pk 
-		WHERE b.create_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
-		ORDER BY b.create_time ASC
-`
+		FROM borrow_fee as b JOIN member as m ON b.member_fk = m.pk
+		WHERE b.create_time BETWEEN ? AND ? 
+		ORDER BY b.create_time ASC;
+	`
 
-	var result []dto.GetMembersTransactionsYearlyResponseDTO
+	var result []dto.GetMembersTransactionsResponseDTO
 
-	rows, err := m.db.Raw(sql).Rows()
+	rows, err := m.db.Raw(sql, start, end).Rows()
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
@@ -81,7 +92,7 @@ func (m MemberRepository) GetMembersTransactionsYearly() []dto.GetMembersTransac
 		userTime, _ := time.Parse("2006-01-02T15:04:05-07:00", userCreateTime)
 		userDateTime := userTime.Format("2006-01-02 15:04:05")
 
-		result = append(result, dto.GetMembersTransactionsYearlyResponseDTO{
+		result = append(result, dto.GetMembersTransactionsResponseDTO{
 			Username:            username,
 			Type:                types,
 			BorrowFee:           borrowFee,
@@ -93,14 +104,51 @@ func (m MemberRepository) GetMembersTransactionsYearly() []dto.GetMembersTransac
 	return result
 }
 
-func (m MemberRepository) GetMembers() []dto.GetMembersResponseDTO {
-	var members []dto.GetMembersResponseDTO
-	sql := `SELECT pk, username FROM member`
-	result := m.db.Raw(sql).Scan(&members)
-	if result.Error != nil {
-		fmt.Println(result.Error.Error())
+func (m MemberRepository) GetMemberTransactionsByDateRangeAndPk(id string, start string, end string) []dto.GetMembersTransactionsResponseDTO {
+	sql := `
+		SELECT m.username, b.type, b.borrow_fee, b.create_time as borrow_fee_create_time, m.create_time as user_create_time 
+		FROM borrow_fee as b JOIN member as m ON b.member_fk = m.pk
+		WHERE m.pk = ? AND b.create_time BETWEEN ? AND ? 
+		ORDER BY b.create_time ASC;
+	`
+
+	var result []dto.GetMembersTransactionsResponseDTO
+
+	rows, err := m.db.Raw(sql, id, start, end).Rows()
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
 	}
 
-	return members
+	for rows.Next() {
+		var username string
+		var types int
+		var borrowFee decimal.Decimal
+		var borrowFeeCreateTime string
+		var userCreateTime string
 
+		rows.Scan(
+			&username,
+			&types,
+			&borrowFee,
+			&borrowFeeCreateTime,
+			&userCreateTime,
+		)
+
+		borrowFeeTime, _ := time.Parse("2006-01-02T15:04:05-07:00", borrowFeeCreateTime)
+		borrowFeeDateTime := borrowFeeTime.Format("2006-01-02 15:04:05")
+
+		userTime, _ := time.Parse("2006-01-02T15:04:05-07:00", userCreateTime)
+		userDateTime := userTime.Format("2006-01-02 15:04:05")
+
+		result = append(result, dto.GetMembersTransactionsResponseDTO{
+			Username:            username,
+			Type:                types,
+			BorrowFee:           borrowFee,
+			BorrowFeeCreateTime: borrowFeeDateTime,
+			UserCreateTime:      userDateTime,
+		})
+	}
+
+	return result
 }

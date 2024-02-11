@@ -25,7 +25,7 @@ func SetupRouter() *gin.Engine {
 	router.GET("/api/members", memberController.GetMembers)
 	router.PATCH("/api/member/:id", memberController.UpdateMember)
 	router.POST("/api/member", memberController.CreateMember)
-	router.GET("/api/members/transactions/yearly", memberController.GetMembersTransactionsYearly)
+	router.GET("/api/members/:id/transactions", memberController.GetMemberTransactions)
 
 	return router
 }
