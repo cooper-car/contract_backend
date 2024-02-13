@@ -10,5 +10,5 @@ func main() {
 	repository.Setup()
 
 	router := http.SetupRouter()
-	router.Run(":8080")
+	router.Run(":3000")
 }
