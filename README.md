@@ -1,2 +1,5 @@
-# contract_backend
-a contract service for backend
+## tech stack
+- Go
+- Gin
+- Gorm
+- MySQL
