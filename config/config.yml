@@ -1,0 +1,6 @@
+
+mysql:
+ ip: "mysql"
+ user: "root"
+ pass: "cooper12345"
+ db: "contracts"
