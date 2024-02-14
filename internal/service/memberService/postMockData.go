@@ -9,8 +9,8 @@ import (
 
 func (m MemberService) CreateMockDataForMembers() {
 
-	// 取得現在時間的 Unix
-	nowUnix := time.Now().Unix()
+	// 取得現在時間的 Unix - 2 小時
+	nowUnix := time.Now().Unix() - 7200
 
 	// 產生 1000 筆 member 資料
 	membersData, nowUnix := makeMemberData(nowUnix)
