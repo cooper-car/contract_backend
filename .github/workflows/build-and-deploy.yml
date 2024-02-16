@@ -21,7 +21,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t coopercar/contract_backend:latest . && docker images
+        run: docker build -t coopercar/contract_backend:1.0 . && docker images
 
       - name: Push Docker image to registry
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/contract_backend:1.0
