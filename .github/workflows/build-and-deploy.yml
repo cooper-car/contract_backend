@@ -19,6 +19,6 @@ jobs:
         with:
           context: .
           file: dockerfile
-          push: true
+#          push: true
           tags: coopercar/contract_backend:latest
       - run: ls -al
