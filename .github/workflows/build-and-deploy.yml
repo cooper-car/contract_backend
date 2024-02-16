@@ -18,7 +18,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfile
+          file: Dockerfile
 #          push: true
           tags: coopercar/contract_backend:latest
       - run: ls -al && docker images
