@@ -21,4 +21,4 @@ jobs:
           file: dockerfile
 #          push: true
           tags: coopercar/contract_backend:latest
-      - run: ls -al
+      - run: ls -al && docker images
