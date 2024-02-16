@@ -8,7 +8,7 @@ RUN apk update && apk add bash
 COPY . .
 
 # 複製 wait-for-it.sh 到容器中
-COPY wait-for-it.sh /app/wait-for-it.sh
+# COPY wait-for-it.sh /app/wait-for-it.sh
 
 # 設置文件權限
 RUN chmod +x /app/wait-for-it.sh
