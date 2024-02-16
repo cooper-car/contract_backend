@@ -89,3 +89,9 @@ func (m MemberController) GetMemberTransactions(ctx *gin.Context) {
 		"data": result,
 	})
 }
+
+func (m MemberController) TestCICD(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "You are testing CICD - {1.0}",
+	})
+}

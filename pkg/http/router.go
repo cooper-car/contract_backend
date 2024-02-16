@@ -26,6 +26,7 @@ func SetupRouter() *gin.Engine {
 	router.PATCH("/api/member/:id", memberController.UpdateMember)
 	router.POST("/api/member", memberController.CreateMember)
 	router.GET("/api/members/:id/transactions", memberController.GetMemberTransactions)
+	router.GET("/api/test-cicd", memberController.TestCICD)
 
 	return router
 }
